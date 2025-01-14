@@ -97,3 +97,11 @@
 /core/target/classes/com/github/dawsonvilamaa/beaconwaypoint/waypoints/WaypointPlayer.class
 /.idea/workspace.xml
 /core/target/classes/com/github/dawsonvilamaa/beaconwaypoint/listeners/WorldListener.class
+
+
+# Adding IDE files to .gitignore
+/.idea
+/.vscode
+*.iml
+
+*.class
