@@ -75,3 +75,4 @@ waypoint-does-not-exist: That waypoint doesn't exist!
 waypoint-icon: Waypoint Icon
 waypoint-icon-not-found: Could not add waypoint icon. No item found for
 world-not-allowed: You cannot set a waypoint in this world
+crouch-to-change-beacon-effect: Crouch-click to change beacon effect!
