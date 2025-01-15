@@ -21,7 +21,7 @@
     </dependencies>
 
     <build>
-        <finalName>BeaconWaypoints-${project.parent.version}</finalName>
+        <finalName>BeaconWaypoints-${project.parent.version}-BRANCHED</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
