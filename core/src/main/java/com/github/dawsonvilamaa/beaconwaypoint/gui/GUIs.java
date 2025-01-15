@@ -3,15 +3,22 @@ package com.github.dawsonvilamaa.beaconwaypoint.gui;
 import com.github.dawsonvilamaa.beaconwaypoint.LanguageManager;
 import com.github.dawsonvilamaa.beaconwaypoint.Main;
 import com.github.dawsonvilamaa.beaconwaypoint.waypoints.*;
+
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.inventory.view.BeaconView;
+import org.bukkit.inventory.view.builder.LocationInventoryViewBuilder;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -56,7 +63,11 @@ public class GUIs {
         // Vanilla beacon button (Sends message about crouching)
         InventoryGUIButton vanillaBeaconButton = new InventoryGUIButton(gui, ChatColor.RESET + languageManager.getString("change-beacon-effect"), null, Material.BEACON);
         vanillaBeaconButton.setOnClick(e -> {
-            player.sendMessage(ChatColor.RED + languageManager.getString("crouch-to-change-beacon-effect"));
+            player.closeInventory();
+            Location location = waypoint.getCoord().getLocation();
+            Bukkit.getLogger().info("Opening " + location.getBlock().toString());
+            BeaconView view = MenuType.BEACON.builder().location(location).title(Component.text("beacon")).build(player);
+            player.openInventory(view);
         });
         gui.addButton(vanillaBeaconButton);
 
