@@ -53,12 +53,10 @@ public class GUIs {
 
         gui.addButtons(new InventoryGUIButton(gui, null, null, Material.WHITE_STAINED_GLASS_PANE), 3);
 
-        //vanilla beacon menu button
+        // Vanilla beacon button (Sends message about crouching)
         InventoryGUIButton vanillaBeaconButton = new InventoryGUIButton(gui, ChatColor.RESET + languageManager.getString("change-beacon-effect"), null, Material.BEACON);
         vanillaBeaconButton.setOnClick(e -> {
-            //opens the vanilla beacon menu using NMS, IDK how it managed to work, but I'll take it
-            Block beacon = player.getWorld().getBlockAt(waypoint.getCoord().getLocation());
-            Main.getVersionWrapper().openBeaconMenu(beacon, player);
+            player.sendMessage(ChatColor.RED + languageManager.getString("crouch-to-change-beacon-effect"));
         });
         gui.addButton(vanillaBeaconButton);
 

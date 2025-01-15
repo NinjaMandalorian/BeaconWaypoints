@@ -4,14 +4,13 @@ import com.earth2me.essentials.IEssentials;
 import com.github.dawsonvilamaa.beaconwaypoint.gui.MenuManager;
 import com.github.dawsonvilamaa.beaconwaypoint.listeners.InventoryListener;
 import com.github.dawsonvilamaa.beaconwaypoint.listeners.WorldListener;
-import com.github.dawsonvilamaa.beaconwaypoint.version.VersionMatcher;
-import com.github.dawsonvilamaa.beaconwaypoint.version.VersionWrapper;
 import com.github.dawsonvilamaa.beaconwaypoint.waypoints.Waypoint;
-import com.github.dawsonvilamaa.beaconwaypoint.waypoints.WaypointCoord;
 import com.github.dawsonvilamaa.beaconwaypoint.waypoints.WaypointManager;
 import com.github.dawsonvilamaa.beaconwaypoint.waypoints.WaypointPlayer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +32,6 @@ public class Main extends JavaPlugin {
     private static LanguageManager languageManager;
     private static WaypointManager waypointManager;
     private static MenuManager menuManager;
-    private static VersionWrapper versionWrapper;
 
     private final WorldListener worldListener = new WorldListener();
     private final InventoryListener inventoryListener = new InventoryListener(this);
@@ -51,86 +49,77 @@ public class Main extends JavaPlugin {
         waypointManager = new WaypointManager();
         menuManager = new MenuManager();
 
-        //get version wrapper
-        versionWrapper = new VersionMatcher().match();
-        if (versionWrapper == null) {
-            this.setEnabled(false);
-        }
-        else {
-            //bStats
-            Metrics metrics = new Metrics(this, 14276);
-            metrics.addCustomChart(new Metrics.SingleLineChart("waypoints", new Callable<Integer>() {
-                @Override
-                public Integer call() throws Exception {
-                    return waypointManager.getPublicWaypoints().size() + waypointManager.getNumPrivateWaypoints();
-                }
-            }));
-
-            //register commands
-            BWCommandExecutor commandExecutor = new BWCommandExecutor(this);
-            Objects.requireNonNull(getCommand("waypoint")).setExecutor(commandExecutor);
-
-            //register events
-            PluginManager pm = getServer().getPluginManager();
-            pm.registerEvents(worldListener, this);
-            pm.registerEvents(inventoryListener, this);
-
-            //create data folder if it doesn't exist
-            if (!getDataFolder().exists())
-                getDataFolder().mkdirs();
-
-            //create config file if it doesn't exist
-            if (!new File(getDataFolder(), "config.yml").exists())
-                saveDefaultConfig();
-
-            //load language config
-            loadLanguage();
-
-            //config update checker
-            try {
-                ConfigUpdater.checkConfig(getConfig());
-            } catch (IOException e) {
-                getLogger().warning("Unable to run the update checker for config.yml");
+        //bStats
+        Metrics metrics = new Metrics(this, 14276);
+        metrics.addCustomChart(new Metrics.SingleLineChart("waypoints", new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                return waypointManager.getPublicWaypoints().size() + waypointManager.getNumPrivateWaypoints();
             }
+        }));
 
-            try {
-                ConfigUpdater.checkLanguageConfig(languageManager.getDefaults());
-            } catch (IOException e) {
-                getLogger().warning("Unable to run the update checker for language.yml");
-            }
+        //register commands
+        BWCommandExecutor commandExecutor = new BWCommandExecutor(this);
+        Objects.requireNonNull(getCommand("waypoint")).setExecutor(commandExecutor);
 
-            //create folder for player waypoints if it doesn't exist
-            File playerDir = new File(getDataFolder() + File.separator + "players");
-            if (!playerDir.exists())
-                playerDir.mkdirs();
+        //register events
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(worldListener, this);
+        pm.registerEvents(inventoryListener, this);
 
-            loadData();
-            autoSave.runTaskTimer(plugin, 6000, 6000);
+        //create data folder if it doesn't exist
+        if (!getDataFolder().exists())
+            getDataFolder().mkdirs();
 
-            //update checker
-            new UpdateChecker(this, 99866).getVersion(version -> {
-                if (!this.getDescription().getVersion().equals(version))
-                    this.getLogger().info("\n=======================================================================\n"
-                            + ChatColor.AQUA + languageManager.getString("new-version-available") + "\n"
-                            + ChatColor.YELLOW + languageManager.getString("current-version") + ": " + Main.plugin.getDescription().getVersion() + "\n"
-                            + languageManager.getString("updated-version") + ": " + version + "\n"
-                            + ChatColor.WHITE +languageManager.getString("download-link") + ": " + ChatColor.UNDERLINE + "https://www.spigotmc.org/resources/beaconwaypoints.99866\n"
-                            + ChatColor.RESET + "=======================================================================");
-            });
+        //create config file if it doesn't exist
+        if (!new File(getDataFolder(), "config.yml").exists())
+            saveDefaultConfig();
 
-            //check if EssentialsX is installed
-            IEssentials essentials = (IEssentials) Bukkit.getPluginManager().getPlugin("Essentials");
-            if (essentials == null)
-                this.getLogger().warning(languageManager.getString("essentials-not-installed"));
+        //load language config
+        loadLanguage();
+
+        //config update checker
+        try {
+            ConfigUpdater.checkConfig(getConfig());
+        } catch (IOException e) {
+            getLogger().warning("Unable to run the update checker for config.yml");
         }
+
+        try {
+            ConfigUpdater.checkLanguageConfig(languageManager.getDefaults());
+        } catch (IOException e) {
+            getLogger().warning("Unable to run the update checker for language.yml");
+        }
+
+        //create folder for player waypoints if it doesn't exist
+        File playerDir = new File(getDataFolder() + File.separator + "players");
+        if (!playerDir.exists())
+            playerDir.mkdirs();
+
+        loadData();
+        autoSave.runTaskTimer(plugin, 6000, 6000);
+
+        //update checker
+        new UpdateChecker(this, 99866).getVersion(version -> {
+            if (!this.getDescription().getVersion().equals(version))
+                this.getLogger().info("\n=======================================================================\n"
+                        + ChatColor.AQUA + languageManager.getString("new-version-available") + "\n"
+                        + ChatColor.YELLOW + languageManager.getString("current-version") + ": " + Main.plugin.getDescription().getVersion() + "\n"
+                        + languageManager.getString("updated-version") + ": " + version + "\n"
+                        + ChatColor.WHITE +languageManager.getString("download-link") + ": " + ChatColor.UNDERLINE + "https://www.spigotmc.org/resources/beaconwaypoints.99866\n"
+                        + ChatColor.RESET + "=======================================================================");
+        });
+
+        //check if EssentialsX is installed
+        IEssentials essentials = (IEssentials) Bukkit.getPluginManager().getPlugin("Essentials");
+        if (essentials == null)
+            this.getLogger().warning(languageManager.getString("essentials-not-installed"));
     }
 
     @Override
     public void onDisable() {
-        if (versionWrapper != null) {
-            autoSave.cancel();
-            saveData();
-        }
+        autoSave.cancel();
+        saveData();
     }
 
     public void loadData() {
@@ -297,12 +286,9 @@ public class Main extends JavaPlugin {
      */
     public static MenuManager getMenuManager() {
         return menuManager;
-    }
+    }    
 
-    /**
-     * @return versionWrapper
-     */
-    public static VersionWrapper getVersionWrapper() {
-        return versionWrapper;
+    public static List<Material> getPyramidBlocks() {
+        return Arrays.asList(Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.DIAMOND_BLOCK, Material.EMERALD_BLOCK, Material.NETHERITE_BLOCK);
     }
 }
