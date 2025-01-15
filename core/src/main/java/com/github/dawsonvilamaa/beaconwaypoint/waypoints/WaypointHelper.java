@@ -72,7 +72,7 @@ public class WaypointHelper {
                 if (!disableAnimations) {
                     //spawn launch particles and play launch sound
                     Objects.requireNonNull(startLoc.getWorld()).spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, startLoc, 50);
-                    startLoc.getWorld().spawnParticle(Particle.FIREWORKS_SPARK, startLoc, 500, 1, 1, 1);
+                    startLoc.getWorld().spawnParticle(Particle.FIREWORK, startLoc, 500, 1, 1, 1);
                     startLoc.getWorld().playSound(startLoc, Sound.ENTITY_FIREWORK_ROCKET_LARGE_BLAST, SoundCategory.BLOCKS, 2, 1);
                     startLoc.getWorld().playSound(startLoc, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.BLOCKS, 1, 0.65F);
                 }
@@ -117,7 +117,7 @@ public class WaypointHelper {
                                 @Override
                                 public void run() {
                                     //give entities resistance and levitation
-                                    ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 255, false, false));
+                                    ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 600, 255, false, false));
                                     ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 600, 127, false, false));
 
                                     if (entity.getLocation().getY() < startBeamTop) {
@@ -132,7 +132,7 @@ public class WaypointHelper {
                                         //let player go if they are stuck after 30 seconds
                                         if (time >= 80) {
                                             ((LivingEntity) entity).removePotionEffect(PotionEffectType.LEVITATION);
-                                            ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 255, false, false));
+                                            ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 600, 255, false, false));
                                             Objects.requireNonNull(finalWaypointPlayer).setTeleporting(false);
                                             this.cancel();
                                         }
@@ -166,7 +166,7 @@ public class WaypointHelper {
 
                                                         //let player go if they are stuck after 30 seconds
                                                         if (time >= 80) {
-                                                            ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 600, 255, false, false));
+                                                            ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 600, 255, false, false));
                                                             Objects.requireNonNull(finalWaypointPlayer).setTeleporting(false);
                                                             this.cancel();
                                                         }

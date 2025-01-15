@@ -267,7 +267,7 @@ public class Waypoint implements Cloneable {
      * @return 0 if beacon cannot be teleported to, 1 if it is able to be teleported to, returns y-coordinate of bedrock if there is bedrock above the beacon
      */
     public int getBeaconStatus() {
-        final List<Material> pyramidBlocks = Main.getVersionWrapper().getPyramidBlocks();
+        final List<Material> pyramidBlocks = Main.getPyramidBlocks();
         int isActive = 1;
 
         Location beaconLoc = this.coord.getLocation();
